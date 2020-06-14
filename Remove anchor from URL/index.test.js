@@ -1,6 +1,7 @@
-var removeUrlAnchor = require("./index");
+const removeUrlAnchor = require(".");
 
+removeUrlAnchor = require("./index.js")
 
-test("the anchor (#) removed.", () => {
-    expect(removeUrlAnchor()).toBe("www.codewars.com")
-})
+test("the anchor (#) removed.", (url) => {
+    expect(removeUrlAnchor(url)).toBe("www.codewars.com")
+});
