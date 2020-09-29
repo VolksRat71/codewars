@@ -1,10 +1,7 @@
-# Instructions
+Complete the function/method so that it returns the url with anything after the anchor (#) removed.
 
-Complete the function/method so that it returns the url with anything after the anchor (`#`) removed.
-
-## Examples
-
-```
+Examples
+```javascript
 // returns 'www.codewars.com'
 removeUrlAnchor('www.codewars.com#about')
 
