@@ -19,59 +19,95 @@ function sudoku2(grid) {
 }
 
 function sudoku2(grid) {
-    // https://dev.to/alisabaj/checking-each-row-column-and-square-is-this-sudoku-board-valid-jg7
-    let store = {
-        rows: {},
-        cols: {},
-        square: {},
-    };
-
-    for (let i = 0; i < 9; i++) {
-
-        for (let j = 0; j < 9; j++) {
-            const box = grid[i][j];
-
-            if (!store["rows"][i] && box !== ".") {
-                store["rows"][i] = [];
-                store["rows"][i].push(box);
-            } 
-            else if (box !== "." && !store["rows"][i].includes(box)) {
-                store["rows"][i].push(box);
-            } 
-            else if (store["rows"][i] && store["rows"][i].includes(box)) {
+    let len = grid.length;
+    let cubeNum = [-1, 3, 8, 12, 17, 21] // <- first   
+    
+    incCube() // hoisted
+    
+    function checkTable(hashTable){
+        for(var i = 0; i < hashTable.length; i++){
+            if(!hashTable.includes(hashTable[i])) {
                 return false;
-            }
-
-            if (!store["cols"][j] && box !== ".") {
-                store["cols"][j] = [];
-                store["cols"][j].push(box);
             } 
-            else if (box !== "." && !store["cols"][j].includes(box)) {
-                store["cols"][j].push(box);
-            } 
-            else if (store["cols"][j] && store["cols"][j].includes(box)) {
-                return false;
-            }
-
-            const squareRowId = Math.ceil((i + 1) / 3);
-            const squareColId = Math.ceil((j + 1) / 3);
-            const squareId = `${squareRowId}-${squareColId}`;
-
-            if (!store["square"][squareId] && box !== ".") {add
-                store["square"][squareId] = [];
-                store["square"][squareId].push(box);
-            } 
-            else if (box !== "." && !store["square"][squareId].includes(box)) {
-                store["square"][squareId].push(box);
-            } 
-            else if (
-                store["square"][squareId] &&
-                store["square"][squareId].includes(box)
-            ) {
-                return false;
-            }
-
         }
     }
+    
+    function incCube(){
+        for(var i= 0; i < 11; i++){
+            cuber(cubeNum)
+            cubeNum.forEach(function(item, index) {
+                this[index] += 3
+            }, cubeNum) 
+            
+            if ([i] == 3) {
+                cubeNum = [26, 30, 35, 39, 44, 48]
+            } 
+            if ([i] == 7) {
+                cubeNum = [53, 57, 62, 66, 71, 75]
+            }
+        }
+    }
+    
+    function cuber(constraints) {
+        let hashTable = new Array;
+        let tempCounter = 0;
+        
+        for(var c = 0; c < len; c++){
+            for(var r = 0; r < len; r++){
+                if( tempCounter > constraints[0] && tempCounter < constraints[1] || 
+                    tempCounter > constraints[2] && tempCounter < constraints[3] || 
+                    tempCounter > constraints[4] && tempCounter < constraints[5]) {
+                    if(grid[c][r] != '.'){
+                        hashTable.push(grid[c][r])
+                    }
+                }
+                tempCounter++
+            }
+        }
+        checkTable(hashTable)
+    }
+    
     return true;
+}
+
+function sudoku2(grid) {
+    let output = true
+    
+    let store = {
+        rows: new Object,
+        columns: new Object,
+        cubes: new Object
+    }
+    
+    for(let row = 0; row < 9; row++){
+        if(!store['rows'][row]) store['rows'][row] = new Array;
+        
+        for(let col = 0; col < 9; col++){
+            if(!store['columns'][col]) store['columns'][col] = new Array;
+            const box = grid[row][col];
+            
+            if(box !== '.'){
+                // Row filtering
+                !store['rows'][row].includes(box)? 
+                store['rows'][row].push(box):
+                output = false
+                
+                // Column Filtering
+                !store['columns'][col].includes(box)?
+                store['columns'][col].push(box):
+                output = false  
+            
+                // Cube Filter
+                const cubeRowId = Math.ceil((row + 1) / 3);
+                const cubeColId = Math.ceil((col + 1) / 3);
+                const cubeId = `${cubeRowId} - ${cubeColId}`
+                
+                if(!store['cubes'][cubeId]) store['cubes'][cubeId] = new Array;
+                !store['cubes'][cubeId].includes(box)?
+                store['cubes'][cubeId].push(box):
+                output = false;
+            }
+        }
+    }
+    return output;
 }
